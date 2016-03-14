@@ -42,6 +42,10 @@ public class DataProvider extends ContentProvider {
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(AUTHORITY, "feeds", FEEDS);
+        //koala@20160314:
+        // Add a URI to match, and the code to return when this URI is matched.
+        // URI nodes may be exact match string, the token "*" that matches any text,
+        // or the token "#" that matches only* numbers.
     }
 
     private static DBHelper mDBHelper;
@@ -62,11 +66,11 @@ public class DataProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         synchronized (DBLock) {
             SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-            String table = matchTable(uri);
+            String table = matchTable(uri);     //koala@20160314: matchTable()自建方法，获取表的名字
             queryBuilder.setTables(table);
 
-            SQLiteDatabase db = getDBHelper().getReadableDatabase();
-            Cursor cursor = queryBuilder.query(db, // The database to
+            SQLiteDatabase db = getDBHelper().getReadableDatabase();    //koala@20160314: 创建数据库
+            Cursor cursor = queryBuilder.query(db, // The database to   //koala@20160314: 查询数据库，而不是查询表
                     // queryFromDB
                     projection, // The columns to return from the queryFromDB
                     selection, // The columns for the where clause
@@ -76,7 +80,7 @@ public class DataProvider extends ContentProvider {
                     sortOrder // The sort order
             );
 
-            cursor.setNotificationUri(getContext().getContentResolver(), uri);
+            cursor.setNotificationUri(getContext().getContentResolver(), uri);  //to be continued
             return cursor;
         }
     }
@@ -157,7 +161,7 @@ public class DataProvider extends ContentProvider {
         String table = null;
         switch (sUriMatcher.match(uri)) {
             case FEEDS:
-                table = FeedsDataHelper.FeedsDBInfo.TABLE_NAME;
+                table = FeedsDataHelper.FeedsDBInfo.TABLE_NAME;     //koala@20160314: 比对成功后返回表名
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

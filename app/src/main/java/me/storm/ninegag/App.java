@@ -18,15 +18,16 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        sContext = getApplicationContext();
+        sContext = getApplicationContext();     //koala@20160314: 获取全局Context
         initImageLoader(getApplicationContext());
     }
 
     public static Context getContext() {
         return sContext;
-    }
+    }       //koala@20160314: 构建方法，便于获取全局Context
 
     // 初始化ImageLoader
+    //koala@20160314: 第三方开源组件universalimageloader
     public static void initImageLoader(Context context) {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
                 .threadPriority(Thread.NORM_PRIORITY - 2).denyCacheImageMultipleSizesInMemory()
@@ -35,5 +36,7 @@ public class App extends Application {
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
                 .build();
         ImageLoader.getInstance().init(config);
+
+
     }
 }

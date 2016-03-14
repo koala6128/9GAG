@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Created by storm on 14-4-8.
  */
+//koala@20160314: DBHelper提供创建SQLiteDatabase数据库的功能，可自定义数据库的名字，具体创建的实现在FeedsDataHelper中配置
+
 public class DBHelper extends SQLiteOpenHelper {
     // 数据库名
     private static final String DB_NAME = "9gag.db";
@@ -20,7 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        FeedsDataHelper.FeedsDBInfo.TABLE.create(db);
+        FeedsDataHelper.FeedsDBInfo.TABLE.create(db);   //koala@20160314: 通过FeedsDataHelper在数据库中建表
     }
 
     @Override
