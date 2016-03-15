@@ -16,6 +16,7 @@ import me.storm.ninegag.App;
 /**
  * Created by storm on 14-4-8.
  */
+//koala@20160315: 自定义的内容提供器
 public class DataProvider extends ContentProvider {
     static final String TAG = DataProvider.class.getSimpleName();
 
@@ -67,10 +68,10 @@ public class DataProvider extends ContentProvider {
         synchronized (DBLock) {
             SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
             String table = matchTable(uri);     //koala@20160314: matchTable()自建方法，获取表的名字
-            queryBuilder.setTables(table);
+            queryBuilder.setTables(table);      //koala@20160315: 设置要查询的表
 
             SQLiteDatabase db = getDBHelper().getReadableDatabase();    //koala@20160314: 创建数据库
-            Cursor cursor = queryBuilder.query(db, // The database to   //koala@20160314: 查询数据库，而不是查询表
+            Cursor cursor = queryBuilder.query(db, // The database to   //koala@20160315: 在数据库db中查询
                     // queryFromDB
                     projection, // The columns to return from the queryFromDB
                     selection, // The columns for the where clause
@@ -80,7 +81,8 @@ public class DataProvider extends ContentProvider {
                     sortOrder // The sort order
             );
 
-            cursor.setNotificationUri(getContext().getContentResolver(), uri);  //to be continued
+            //koala@20160315: Register to watch a content URI for changes.
+            cursor.setNotificationUri(getContext().getContentResolver(), uri);
             return cursor;
         }
     }
@@ -101,18 +103,20 @@ public class DataProvider extends ContentProvider {
             String table = matchTable(uri);
             SQLiteDatabase db = getDBHelper().getWritableDatabase();
             long rowId = 0;
-            db.beginTransaction();
+
+            //koala@20160315: Android数据库操作（特别是写操作）是非常慢的，将所有操作打包成一个事务能大大提高处理速度
+            db.beginTransaction();  //koala@20160315: 开启事务
             try {
-                rowId = db.insert(table, null, values);
-                db.setTransactionSuccessful();
+                rowId = db.insert(table, null, values);     //koala@20160315: 开启事务后，结束事务前，可进行批量操作（此处只有插入操作）
+                db.setTransactionSuccessful();  //koala@20160315: 事务处理成功
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             } finally {
-                db.endTransaction();
+                db.endTransaction();    //koala@20160315: 结束事务
             }
-            if (rowId > 0) {
-                Uri returnUri = ContentUris.withAppendedId(uri, rowId);
-                getContext().getContentResolver().notifyChange(uri, null);
+            if (rowId > 0) {    //koala@20160315: 插入操作返回新插入的行号，或-1
+                Uri returnUri = ContentUris.withAppendedId(uri, rowId);     //koala@20160315: 返回新插入value的路径uri
+                getContext().getContentResolver().notifyChange(uri, null);  //koala@20160315: Notify registered observers that a row was updated and attempt to sync changesto the network.
                 return returnUri;
             }
             throw new SQLException("Failed to insert row into " + uri);
