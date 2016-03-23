@@ -20,9 +20,12 @@ import me.storm.ninegag.util.ToastUtils;
 /**
  * Created by storm on 14-3-24.
  */
+
+//koala@20160322: 作为MainActivity的父类，主要完成actionbar的初始化操作
+//采用第三方插件shimmer
 public abstract class BaseActivity extends FragmentActivity {
     protected ActionBar actionBar;
-    private ShimmerTextView mActionBarTitle;
+    private ShimmerTextView mActionBarTitle;        //koala@20160322：shimmer类型
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +39,7 @@ public abstract class BaseActivity extends FragmentActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayShowCustomEnabled(true);
-        View view = View.inflate(this, R.layout.actionbar_title, null);
+        View view = View.inflate(this, R.layout.actionbar_title, null);     //koala@20160322: actionbar中的textView采用shimmer
         mActionBarTitle = (ShimmerTextView) view.findViewById(R.id.tv_shimmer);
         new Shimmer().start(mActionBarTitle);
         actionBar.setCustomView(view);
@@ -54,7 +57,7 @@ public abstract class BaseActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                onBackPressed();    //koala@20160322：返回主界面
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, PreferenceActivity.class));

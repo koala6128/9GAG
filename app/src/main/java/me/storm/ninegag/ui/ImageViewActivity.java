@@ -47,9 +47,13 @@ public class ImageViewActivity extends SwipeBackActivity {
         });
 
         String imageUrl = getIntent().getStringExtra(IMAGE_URL);
-        DisplayImageOptions options = new DisplayImageOptions.Builder().cacheOnDisc(true)
+
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheOnDisc(true)
                 .considerExifParams(true).build();
-        ImageLoader.getInstance().displayImage(imageUrl, photoView, options, new SimpleImageLoadingListener() {
+
+        ImageLoader.getInstance().displayImage(imageUrl, photoView, options,
+                new SimpleImageLoadingListener() {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 progressWheel.setVisibility(View.GONE);
